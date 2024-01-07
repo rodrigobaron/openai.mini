@@ -12,9 +12,9 @@ wolfram = WolframAlphaAPIWrapper()
 class Wolfram(Plugin):
     name = "wolfram"
     name_for_human = "Wolfram Alpha"
-    description = "可以用来计算数学题目、方程求解等数学方面的运算，也可以用来解答一些具有时效性的问题，例如，当前的金价是多少、美国的首都是哪里等问题。"
+    description = "It can be used to calculate mathematical problems, solve equations and other mathematical operations, and can also be used to answer some time-sensitive questions, such as what is the current price of gold and where is the capital of the United States."
     arguments: List[Argument] = [
-        Argument(name="query", type="string", description="要计算或着求解的内容，或者是需要查询的内容", required=True)
+        Argument(name="query", type="string", description="The content to be calculated or solved, or the content to be queried", required=True)
     ]
 
     def run(self, args: str) -> Any:

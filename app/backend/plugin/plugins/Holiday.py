@@ -8,10 +8,10 @@ from ..type import Argument, Plugin
 class Holiday(Plugin):
     name = "Holiday"
     name_for_human = "HolidayQuery"
-    description = "可以用来查询各个国家公开的法定节假日时间。"
+    description = "It can be used to query the public holiday status in various countries."
     arguments: List[Argument] = [
-        Argument(name="countryCode", type="string", description="国家的ISO 3166-1二位字母代码，例如 CN 表示中国，GB 表示英国", required=False),
-        Argument(name="year", type="int", description="哪一年的节日", required=False),
+        Argument(name="countryCode", type="string", description="The ISO 3166-1 two-digit letter code of the country, for example, CN means China, GB means the United Kingdom", required=False),
+        Argument(name="year", type="int", description="Which year's festival", required=False),
     ]
 
     def run(self, args: str) -> Any:
@@ -24,8 +24,8 @@ class Holiday(Plugin):
         try:
             response = requests.get(url, timeout=5)
         except requests.exceptions.Timeout:
-            return "查询失败"
+            return "Query failed"
         
         if response.status_code != 200:
-            return "查询失败"
+            return "Query failed"
         return response.json()

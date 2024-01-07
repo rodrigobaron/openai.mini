@@ -32,9 +32,9 @@ export default MessageList;
 
 const dummyRequest = `
 {
-  "link": "https://www.google.com/search?q=2022年8月9日天气",
+  "link": "https://www.google.com/search?q=Weather on August 9, 2022",
   "lp": false,
-  "ur": "2022年8月9日天气",
+  "ur": "Weather on August 9, 2022",
   "l": "zh-CN",
   "rt": false
 }
@@ -43,6 +43,6 @@ const dummyRequest = `
 const dummyResponse = `
 {
   "title": "",
-  "content": "本周迎来超长伏天天气湿热_抚顺市人民政府",
+  "content": "The weather is hot and humid this week - Fushun Municipal People's Government",
 }
 `;
