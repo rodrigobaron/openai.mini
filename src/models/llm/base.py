@@ -1,5 +1,6 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from transformers.generation import GenerationConfig
+import torch
 from typing import Any, List, Literal, Optional
 
 from ..base import Model
@@ -17,9 +18,10 @@ class LlmModel(Model):
     tokenizer_args: dict
     generation_config: dict
 
-    def __init__(self, model: str, name: Optional[str]=None, owner: Optional[str]=None, stream_type: Optional[StreamType]='string', model_args: Optional[dict]={}, tokenizer_args: Optional[dict]={}, generation_config: Optional[dict]={}):
+    def __init__(self, model: str, name: Optional[str]=None, owner: Optional[str]=None, stream_type: Optional[StreamType]='string', model_args: Optional[dict]={}, tokenizer_args: Optional[dict]={}, generation_config: Optional[dict]={}, apply_quant: Optional[bool]=False):
         super().__init__(model, name, owner)
         self.stream_type = stream_type
+        self.apply_quant = apply_quant
 
         default_tokenizer_args = { "trust_remote_code": True }
         default_model_args = { "device_map": "auto", "trust_remote_code": True }
@@ -34,7 +36,12 @@ class LlmModel(Model):
         model_id = compose_model_id(self.id, prefix=self.org)
         print(f"Loading model {model_id}")
         self.tokenizer = AutoTokenizer.from_pretrained(model_id, **self.tokenizer_args)
-        self.model = AutoModelForCausalLM.from_pretrained(model_id, **self.model_args)
+
+        quantization_config = None
+        if self.apply_quant:
+            quantization_config = get_quant_config()
+
+        self.model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=quantization_config, **self.model_args)
         self.model.eval()
         self.model.generation_config = GenerationConfig.from_pretrained(model_id, **self.generation_config)
         print(f"Model {model_id} loaded!")
@@ -66,3 +73,11 @@ def split_messages(messages: List[ChatMessage]):
                 history.append([prev_messages[i].content, prev_messages[i+1].content])
 
     return query, history
+
+
+def get_quant_config():
+    return BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
+    )

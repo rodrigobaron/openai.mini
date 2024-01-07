@@ -21,8 +21,8 @@ class TokenFormatConfig(BaseModel):
     E_AI: str = ""
 
 
-def format_tokens(dialog, tokenizer, config):
-    if dialog[0].role != "system":
+def format_tokens(dialog, tokenizer, config, ensure_system=True):
+    if ensure_system and dialog[0].role != "system":
         dialog = [ChatMessage(role="system", content=config.SYSTEM_PROMPT)] + dialog
     dialog = [ChatMessage(role=dialog[1].role, content=config.B_SYS
                           + dialog[0].content

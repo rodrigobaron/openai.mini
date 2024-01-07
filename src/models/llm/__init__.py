@@ -5,3 +5,5 @@ from .internlm import InternLM
 from .llama import LLaMA
 from .qwen import Qwen
 from .xverse import Xverse
+from .mistral import Mistral
+from .open_chat import OpenChat

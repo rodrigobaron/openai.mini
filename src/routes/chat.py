@@ -40,7 +40,6 @@ async def chat_completions(request: ChatCompletionRequest):
         finish_reason = "stop"
         completion_tokens = num_tokens_from_messages([{"role": "assistant", "content": response}])
         total_tokens = completion_tokens + prompt_tokens
-        # FIXME: usage,用gpt3.5来估算
         usage = UsageInfo(prompt_tokens=prompt_tokens, total_tokens=total_tokens, completion_tokens=completion_tokens,)
         if with_function_call:
             message, finish_reason = build_chat_message(response)
