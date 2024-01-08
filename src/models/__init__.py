@@ -8,7 +8,8 @@ from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, Mixt
 
 apply_quant = True
 
-_MODELS = [
+
+_LLM_MODELS = [
     ChatGLM("THUDM/chatglm-6b", apply_quant=apply_quant),
     ChatGLM("THUDM/chatglm2-6b", apply_quant=apply_quant),
     ChatGLM("THUDM/chatglm3-6b", apply_quant=apply_quant),
@@ -40,19 +41,33 @@ _MODELS = [
     Qwen("Qwen/Qwen-72B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud", model_args={"bf16": True}),
     
     Xverse("xverse/XVERSE-13B-Chat", apply_quant=apply_quant, model_args={"torch_dtype": torch.bfloat16}),
+]
 
+_AUDIO_MODELS = [
     AudioModel("openai/whisper-large-v2"),
     AudioModel("openai/whisper-medium.en"),
     AudioModel("openai/whisper-tiny"),
+]
 
+_EMBEDDING_MODELS = [
     EmbeddingModel("BAAI/bge-large-zh", normalize_embeddings=True),
     EmbeddingModel("moka-ai/m3e-large"),
     EmbeddingModel("thenlper/gte-large"),
     EmbeddingModel("infloat/e5-large-v2"),
     EmbeddingModel("infloat/multilingual-e5-large"),
+]
 
+_IMAGE_MODELS = [
     ImageModel("stabilityai/stable-diffusion-xl-base-1.0"),
 ]
+
+_VLM_MODELS = [
+    # =(
+]
+
+_MODELS = _LLM_MODELS + _AUDIO_MODELS + _EMBEDDING_MODELS + _IMAGE_MODELS + _VLM_MODELS
+
+
 _LOADED_MODELS = {}
 
 

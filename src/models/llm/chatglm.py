@@ -2,6 +2,7 @@ from transformers import AutoTokenizer, AutoModel
 from typing import List, Optional
 
 from src.utils.env import compose_model_id
+from src.utils.chat_template import build_chat_template
 
 from .base import LlmModel, split_messages
 from ...type import ChatMessage
@@ -16,6 +17,8 @@ class ChatGLM(LlmModel):
         if self.id == 'chatglm-6b':
             self.model.half()
         self.model.cuda().eval()
+        if self.token_format_config is not None:
+            self.tokenizer.chat_template = build_chat_template(self.token_format_config)
         print(f"Model {model_id} loaded!")
 
         return self
@@ -32,4 +35,4 @@ class ChatGLM(LlmModel):
             response = self.model.stream_chat(self.tokenizer, query, history) #, **kwargs)
             return response, "tuple"
         else:
-            return super().chat(messages, stream=stream)  # , **kwargs)
+            return super().chat(messages, stream=stream)

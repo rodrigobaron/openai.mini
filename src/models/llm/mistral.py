@@ -2,7 +2,7 @@
 from typing import List
 
 from .llama import LLaMA
-from src.utils.token import TokenFormatConfig, format_tokens
+from src.utils.chat_template import build_chat_template
 from threading import Thread
 from transformers import TextIteratorStreamer
 from .base import LlmModel
@@ -17,16 +17,9 @@ from src.type import ChatMessage
 
 from src.contrib.offload.build_model import OffloadConfig, QuantConfig, build_model
 
-_SYSTEM_PROMPT = ""
-
-_token_format_config = TokenFormatConfig(
-    SYSTEM_PROMPT=_SYSTEM_PROMPT,
-    B_INST="[INST]", E_INST="[/INST]",
-)
-
 class Mistral(LLaMA):
     def chat(self, messages: List[str], stream: bool = False, **kwargs):
-        return super().chat(messages, stream, token_format_config=_token_format_config) #, **kwargs)
+        return super().chat(messages, stream)
     
 class MixtralOffload(LlmModel):
     def load(self):
@@ -76,12 +69,15 @@ class MixtralOffload(LlmModel):
         )
         
         self.model.cuda().eval()
+        if self.token_format_config is not None:
+            self.tokenizer.chat_template = build_chat_template(self.token_format_config)
         print(f"Model {model_id} loaded!")
 
         return self
 
-    def chat(self, messages: List[str], stream: bool = False, token_format_config: Optional[TokenFormatConfig] = None, **kwargs):
-        streamer = _stream_chat(self.model, self.tokenizer, messages, token_format_config) #, **kwargs)
+    def chat(self, messages: List[str], stream: bool = False, **kwargs):
+        msgs = [_chat_message_to_mistral_message(m) for m in messages]
+        streamer = _stream_chat(self.model, self.tokenizer, msgs)
         if stream:
             return streamer, "delta"
         else:
@@ -92,21 +88,20 @@ class MixtralOffload(LlmModel):
             return "".join(chunks).strip(), None
 
 
-def _stream_chat(model, tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None, **kwargs):
-    gen_kwargs = _compose_args(tokenizer, messages, token_format_config)
+def _stream_chat(model, tokenizer, messages: List[ChatMessage], **kwargs):
+    gen_kwargs = _compose_args(tokenizer, messages)
 
     thread = Thread(target=model.generate, kwargs=gen_kwargs)
     thread.start()
 
     return gen_kwargs["streamer"]
 
-def _compose_args(tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None):
-    gen_kwargs = {"do_sample": True, "max_length": 8000, "temperature": 0.3,
+def _compose_args(tokenizer, messages: List[ChatMessage]):
+    gen_kwargs = {"do_sample": True, "max_length": 1024, "temperature": 0.3,
                   "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id}
 
-    config = token_format_config if token_format_config is not None else TokenFormatConfig()
-    chat = format_tokens(messages, tokenizer, config)
-    input_ids = torch.tensor(chat).long()
+    input_ids = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
+    input_ids = torch.tensor(input_ids).long()
     input_ids = input_ids.unsqueeze(0)
     input_ids = input_ids.to("cuda")
     gen_kwargs["input_ids"] = input_ids
@@ -115,3 +110,9 @@ def _compose_args(tokenizer, messages: List[ChatMessage], token_format_config: T
     gen_kwargs["streamer"] = streamer
 
     return gen_kwargs
+
+def _chat_message_to_mistral_message(message: ChatMessage):
+    return {
+        "role": message.role if message.role == "assistant" else "user",  # "system" role is not supported by Mixtral
+        "content": message.content
+    }

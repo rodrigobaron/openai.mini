@@ -1,24 +1,6 @@
-from pydantic import BaseModel
 from typing import List
 import tiktoken
 from ..type import ChatMessage
-
-
-DEFAULT_SYSTEM_PROMPT = """\
-You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
-
-If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.
-"""
-
-
-class TokenFormatConfig(BaseModel):
-    SYSTEM_PROMPT: str = DEFAULT_SYSTEM_PROMPT
-    B_SYS: str = "<<SYS>>\n"
-    E_SYS: str = "\n<</SYS>>\n\n"
-    B_INST: str = "[INST]"
-    E_INST: str = "[/INST]"
-    B_AI: str = ""
-    E_AI: str = ""
 
 
 def format_tokens(dialog, tokenizer, config):

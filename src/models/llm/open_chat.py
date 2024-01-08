@@ -4,7 +4,6 @@ from transformers import TextIteratorStreamer
 from typing import List, Optional
 
 from .base import LlmModel
-from src.utils.token import TokenFormatConfig, format_tokens
 from src.type import ChatMessage
 
 class OpenChat(LlmModel):
@@ -13,8 +12,8 @@ class OpenChat(LlmModel):
         self.tokenizer.add_special_tokens({"pad_token": "<PAD>"})
         return self
     
-    def chat(self, messages: List[str], stream: bool = False, token_format_config: Optional[TokenFormatConfig] = None, **kwargs):
-        streamer = _stream_chat(self.model, self.tokenizer, messages, token_format_config) #, **kwargs)
+    def chat(self, messages: List[str], stream: bool = False, **kwargs):
+        streamer = _stream_chat(self.model, self.tokenizer, messages) #, **kwargs)
         if stream:
             return streamer, "delta"
         else:
@@ -25,24 +24,22 @@ class OpenChat(LlmModel):
             return "".join(chunks).strip(), None
 
 
-def _stream_chat(model, tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None, **kwargs):
-    gen_kwargs = _compose_args(tokenizer, messages, token_format_config)
+def _stream_chat(model, tokenizer, messages: List[ChatMessage], **kwargs):
+    gen_kwargs = _compose_args(tokenizer, messages)
 
     thread = Thread(target=model.generate, kwargs=gen_kwargs)
     thread.start()
 
     return gen_kwargs["streamer"]
 
-def _compose_args(tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None):
-    gen_kwargs = {"do_sample": True, "max_length": 8192, "temperature": 0.3,
+def _compose_args(tokenizer, messages: List[ChatMessage]):
+    gen_kwargs = {"do_sample": True, "max_length": 1024, "temperature": 0.3,
                   "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id,
                   "pad_token_id": tokenizer.eos_token_id}
 
-    # config = token_format_config if token_format_config is not None else TokenFormatConfig()
-    # chat = format_tokens(messages, tokenizer, config)
-    chat = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
+    input_ids = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
 
-    input_ids = torch.tensor(chat).long()
+    input_ids = torch.tensor(input_ids).long()
     input_ids = input_ids.unsqueeze(0)
     input_ids = input_ids.to("cuda")
     gen_kwargs["input_ids"] = input_ids
