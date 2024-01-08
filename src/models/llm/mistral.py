@@ -3,8 +3,9 @@ from typing import List
 
 from .llama import LLaMA
 from src.utils.token import TokenFormatConfig
-from .base import LlmModel, split_messages
+from .base import LlmModel
 from src.utils.env import compose_model_id
+from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoConfig
 
 from src.contrib.offload.build_model import OffloadConfig, QuantConfig, build_model
