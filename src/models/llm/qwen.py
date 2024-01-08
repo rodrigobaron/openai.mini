@@ -1,5 +1,6 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from typing import List, Optional
+import torch
 
 from src.utils.env import compose_model_id
 
@@ -9,8 +10,9 @@ class Qwen(LlmModel):
     def load(self):
         model_id = compose_model_id(self.id, prefix=self.org)
         print(f"Loading model {model_id}")
+        quantization_config = get_quant_config()
         self.tokenizer = AutoTokenizer.from_pretrained(model_id, **self.tokenizer_args)
-        self.model = AutoModelForCausalLM.from_pretrained(model_id, **self.model_args)
+        self.model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=quantization_config, **self.model_args)
         if 'fp16' in self.model_args:
             self.model.bfloat16().eval()
         else:
@@ -27,3 +29,10 @@ class Qwen(LlmModel):
         else:
             response = self.model.chat(self.tokenizer, query, history, **kwargs)
             return response
+
+def get_quant_config():
+    return BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
+    )
