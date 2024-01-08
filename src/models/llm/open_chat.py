@@ -34,19 +34,14 @@ def _stream_chat(model, tokenizer, messages: List[ChatMessage], token_format_con
     return gen_kwargs["streamer"]
 
 def _compose_args(tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None):
-    gen_kwargs = {"do_sample": True, "max_length": 8192, "temperature": 1.0,
-                  "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id}
+    gen_kwargs = {"do_sample": True, "max_length": 8192, "temperature": 0.3,
+                  "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id,
+                  "pad_token_id": tokenizer.eos_token_id}
 
-    config = token_format_config if token_format_config is not None else TokenFormatConfig(
-        SYSTEM_PROMPT="",
-        B_SYS = "",
-        E_SYS = "",
-        B_INST = "GPT4 Correct User:",
-        E_INST = "<|end_of_turn|>",
-        B_AI = "GPT4 Correct Assistant:",
-        E_AI = "<|end_of_turn|>"
-    )
-    chat = format_tokens(messages, tokenizer, config, ensure_system=False)
+    # config = token_format_config if token_format_config is not None else TokenFormatConfig()
+    # chat = format_tokens(messages, tokenizer, config)
+    chat = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
+
     input_ids = torch.tensor(chat).long()
     input_ids = input_ids.unsqueeze(0)
     input_ids = input_ids.to("cuda")

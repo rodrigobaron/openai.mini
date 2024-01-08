@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from .audio import AudioModel
 from .embedding import EmbeddingModel
 from .image import ImageModel
-from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, OpenChat
+from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, Phi
 
 apply_quant = True
 
@@ -22,12 +22,17 @@ _MODELS = [
     LLaMA("meta-llama/Llama-2-7b-chat-hf", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
     LLaMA("meta-llama/Llama-2-13b-chat-hf", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
     LLaMA("codellama/CodeLlama-7b-Instruct-hf", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "device_map": "auto"}),
+    LLaMA("TinyLlama/TinyLlama-1.1B-Chat-v1.0", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     LLaMA("stabilityai/FreeWilly2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     
     OpenChat("openchat/openchat-3.5-1210", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
     OpenChat("beowolx/CodeNinja-1.0-OpenChat-7B", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
     Mistral("mistralai/Mistral-7B-Instruct-v0.2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
+
+    MixtralOffload("lavawolfiee/Mixtral-8x7B-Instruct-v0.1-offloading-demo"),
+
+    Phi("microsoft/phi-2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "device_map": "auto"}),
 
     Qwen("Qwen/Qwen-1_8B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),
     Qwen("Qwen/Qwen-7B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),

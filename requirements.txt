@@ -8,6 +8,8 @@ sse-starlette
 tiktoken
 torch>=2.0
 transformers==4.35.0
+peft==0.6.2
+bitsandbytes
 transformers_stream_generator==0.0.4
 uvicorn
 sentencepiece
