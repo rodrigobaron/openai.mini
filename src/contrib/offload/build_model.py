@@ -24,7 +24,7 @@ from src.contrib.offload.custom_layers import (
     MixtralBLockSparseTop2MLP_HQQ,
     SparseMoeWrapper,
 )
-from .utils import with_default_dtype
+from src.contrib.offload.utils import with_default_dtype
 
 
 @dataclass(frozen=True)
