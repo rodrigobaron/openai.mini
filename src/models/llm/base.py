@@ -6,7 +6,7 @@ from typing import Any, List, Literal, Optional
 from ..base import Model
 from src.utils.env import compose_model_id
 from src.type import ChatMessage, ChatFunction
-from src.utils.token import TokenFormatConfig
+from src.utils.chat_template import TokenFormatConfig
 from src.utils.chat_template import build_chat_template
 
 StreamType = Literal["tuple", "string"]
