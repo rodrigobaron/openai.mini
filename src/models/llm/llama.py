@@ -39,7 +39,7 @@ def _compose_args(tokenizer, messages: List[ChatMessage]):
 
     input_ids = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
     input_ids = torch.tensor(input_ids).long()
-    input_ids = input_ids.unsqueeze(0)
+    # input_ids = input_ids.unsqueeze(0)
     input_ids = input_ids.to("cuda")
     gen_kwargs["input_ids"] = input_ids
 
