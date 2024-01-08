@@ -28,7 +28,7 @@ export const updateChat = async (chat: Chat, modelId: string, message: Message) 
 };
 
 const summaryToTitle = async (message: Message, modelId: string) => {
-  const content = `Please summarize the following content into a title of less than 10 words in Chinese. The content is: \n\n${message.content}`;
+  const content = `Please summarize the following content into a title of less than 10 words in English. The content is: \n\n${message.content}`;
   const summary = [{ role: "user", content }] as Message[];
   const completion = await getRawCompletions(OPENAI_API_BASE, modelId, summary, () => {});
   return completion?.join("").replaceAll('"', "") ?? "Untitled";

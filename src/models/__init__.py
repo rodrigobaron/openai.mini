@@ -35,7 +35,7 @@ _MODELS = [
     Phi("microsoft/phi-2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "device_map": "auto"}),
 
     Qwen("Qwen/Qwen-1_8B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),
-    Qwen("Qwen/Qwen-7B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),
+    Qwen("Qwen/Qwen-7B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud", model_args={"fp16": True}),
     Qwen("Qwen/Qwen-14B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),
     Qwen("Qwen/Qwen-72B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud", model_args={"bf16": True}),
     

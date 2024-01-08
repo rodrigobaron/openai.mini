@@ -38,7 +38,7 @@ const groupByYear = (chats: Chat[]) => {
 
   const sorted = years.sort((a, b) => Number(b.title) - Number(a.title));
   const thisYearChats = years.length > 0 ? years[0].chats : [];
-  const prevYears = sorted.slice(thisYearChats ? 1 : 0).map((g) => ({ ...g, title: `${g.title}年` }));
+  const prevYears = sorted.slice(thisYearChats ? 1 : 0).map((g) => ({ ...g, title: `${g.title}` }));
 
   return { thisYearChats, prevYears };
 };
@@ -60,7 +60,7 @@ const groupByMonth = (chats: Chat[]) => {
 
   const sorted = months.sort((a, b) => Number(b.title) - Number(a.title));
   const thisMonthChats = months.length > 0 ? months[0].chats : [];
-  const prevMonths = sorted.slice(thisMonthChats ? 1 : 0).map((g) => ({ ...g, title: `${g.title}月` }));
+  const prevMonths = sorted.slice(thisMonthChats ? 1 : 0).map((g) => ({ ...g, title: `${g.title}` }));
 
   return { thisMonthChats, prevMonths };
 };
