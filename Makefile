@@ -8,8 +8,8 @@ install:
 build:
 	cd app/frontend && yarn install && yarn build
 
-run-openai:
-	python3 -m src.api
+run-api:
+	TOKENIZERS_PARALLELISM=false python3 -m src.api
 
 run-app:
 	python3 -m app.server
