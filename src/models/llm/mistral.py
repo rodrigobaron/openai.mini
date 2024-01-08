@@ -9,6 +9,8 @@ from hqq.core.quantize import BaseQuantizeConfig
 from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoConfig
 import torch
+from typing import List, Optional
+
 
 from src.contrib.offload.build_model import OffloadConfig, QuantConfig, build_model
 
@@ -96,7 +98,7 @@ def _stream_chat(model, tokenizer, messages: List[ChatMessage], token_format_con
     return gen_kwargs["streamer"]
 
 def _compose_args(tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None):
-    gen_kwargs = {"do_sample": True, "max_length": 2048, "temperature": 1.0,
+    gen_kwargs = {"do_sample": True, "max_length": 8000, "temperature": 0.3,
                   "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id}
 
     config = token_format_config if token_format_config is not None else TokenFormatConfig()

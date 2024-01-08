@@ -6,7 +6,6 @@ from typing import List, Optional
 from .base import LlmModel
 from src.utils.token import TokenFormatConfig, format_tokens
 from src.type import ChatMessage
-from typing import List, Optional
 
 
 class LLaMA(LlmModel):
@@ -36,7 +35,7 @@ def _stream_chat(model, tokenizer, messages: List[ChatMessage], token_format_con
     return gen_kwargs["streamer"]
 
 def _compose_args(tokenizer, messages: List[ChatMessage], token_format_config: TokenFormatConfig = None):
-    gen_kwargs = {"do_sample": True, "max_length": 8000, "temperature": 0.3,
+    gen_kwargs = {"do_sample": True, "max_length": 2048, "temperature": 1.0,
                   "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id}
 
     config = token_format_config if token_format_config is not None else TokenFormatConfig()
