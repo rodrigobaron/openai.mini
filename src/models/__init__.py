@@ -6,6 +6,8 @@ from .embedding import EmbeddingModel
 from .image import ImageModel
 from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, Phi
 
+from src.utils.chat_template import FreeTokenFormatConfig
+
 apply_quant = True
 
 
@@ -33,7 +35,8 @@ _LLM_MODELS = [
 
     MixtralOffload("lavawolfiee/Mixtral-8x7B-Instruct-v0.1-offloading-demo"),
 
-    Phi("microsoft/phi-2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "device_map": "auto"}),
+    Phi("microsoft/phi-2", apply_quant=apply_quant, 
+        model_args={"torch_dtype": torch.float16, "device_map": "auto"}, token_format_config = FreeTokenFormatConfig()),
 
     Qwen("Qwen/Qwen-1_8B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),
     Qwen("Qwen/Qwen-7B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud", model_args={"fp16": True}),
