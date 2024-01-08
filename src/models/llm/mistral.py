@@ -10,6 +10,7 @@ from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoConfig
 import torch
 from typing import List, Optional
+from src.type import ChatMessage
 
 
 from src.contrib.offload.build_model import OffloadConfig, QuantConfig, build_model
