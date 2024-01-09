@@ -32,7 +32,7 @@ async def chat_completions(request: ChatCompletionRequest):
         kwargs.update({"stop_words_ids": stop_words_ids})
     prompt_tokens = num_tokens_from_messages([{"role": m.role, "content": m.content} for m in messages])
 
-    response, extra = model.chat(messages, stream=request.stream,temperature=request.temperature,top_p=request.top_p, **kwargs)
+    response, extra = model.chat(messages, stream=request.stream,temperature=request.temperature,top_p=request.top_p, max_tokens=request.max_tokens, frequency_penalty=request.frequency_penalty, **kwargs)
     if request.stream:
         predict = _predict(model.id, response, extra, with_function_call)
         return EventSourceResponse(predict, media_type="text/event-stream")
