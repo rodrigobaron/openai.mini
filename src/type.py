@@ -61,7 +61,7 @@ class ChatCompletionRequest(BaseModel):
     function_call: Union[str, Dict[str, str]] = "auto"
     stop: Optional[Union[str, List[str]]] = None
     presence_penalty: Optional[float] = 0
-    frequnecy_penalty: Optional[float] = 0
+    frequency_penalty: Optional[float] = 0
     logit_bias: Optional[dict] = None
     user: Optional[str] = None
 
