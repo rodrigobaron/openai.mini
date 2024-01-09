@@ -8,7 +8,7 @@ from src.utils.env import compose_model_id
 from src.type import ChatMessage, ChatFunction
 from src.utils.chat_template import TokenFormatConfig
 from src.utils.chat_template import build_chat_template
-
+from src.utils.request import parse_chat_kwargs
 StreamType = Literal["tuple", "string"]
 
 class LlmModel(Model):
@@ -55,11 +55,12 @@ class LlmModel(Model):
 
     def chat(self, messages: List[ChatMessage], functions: Optional[List[ChatFunction]] = None, stream: Optional[bool] = False, **kwargs):
         query, history = split_messages(messages)
+        chat_kwargs = parse_chat_kwargs(**kwargs)
         if stream:
-            response = self.model.chat(self.tokenizer, query, history=history, functions=functions, stream=True)
+            response = self.model.chat(self.tokenizer, query, history=history, functions=functions, stream=True, **chat_kwargs)
             return response, self.stream_type
         else:
-            return self.model.chat(self.tokenizer, query, history=history, functions=functions)
+            return self.model.chat(self.tokenizer, query, history=history, functions=functions, **chat_kwargs)
 
 
 

@@ -2,6 +2,7 @@ import torch
 from threading import Thread
 from transformers import TextIteratorStreamer
 from typing import List, Optional
+from src.utils.request import parse_chat_kwargs
 
 from .base import LlmModel
 from src.type import ChatMessage
@@ -14,7 +15,7 @@ class LLaMA(LlmModel):
         return self
     
     def chat(self, messages: List[str], stream: bool = False, **kwargs):
-        streamer = _stream_chat(self.model, self.tokenizer, messages)
+        streamer = _stream_chat(self.model, self.tokenizer, messages, **kwargs)
         if stream:
             return streamer, "delta"
         else:
@@ -26,16 +27,16 @@ class LLaMA(LlmModel):
 
 
 def _stream_chat(model, tokenizer, messages: List[ChatMessage], **kwargs):
-    gen_kwargs = _compose_args(tokenizer, messages)
-
+    gen_kwargs = _compose_args(tokenizer, messages, **kwargs)
     thread = Thread(target=model.generate, kwargs=gen_kwargs)
     thread.start()
 
     return gen_kwargs["streamer"]
 
-def _compose_args(tokenizer, messages: List[ChatMessage]):
-    gen_kwargs = {"do_sample": True, "max_length": 512, "temperature": 0.3,
-                  "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id}
+def _compose_args(tokenizer, messages: List[ChatMessage], **kwargs):
+    gen_kwargs = {"max_length": 512, "eos_token_id": tokenizer.eos_token_id}
+    chat_kwargs = parse_chat_kwargs(**kwargs)
+    gen_kwargs.update(chat_kwargs)
 
     input_ids = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
     input_ids = torch.tensor(input_ids).long()
