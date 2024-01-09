@@ -98,7 +98,7 @@ def _stream_chat(model, tokenizer, messages: List[ChatMessage], **kwargs):
 
 def _compose_args(tokenizer, messages: List[ChatMessage]):
     gen_kwargs = {"do_sample": True, "max_length": 1024, "temperature": 0.3,
-                  "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.eos_token_id}
+                  "repetition_penalty": 1.2, "top_p": 0.95, "eos_token_id": tokenizer.pad_token_id}
 
     input_ids = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
     input_ids = torch.tensor(input_ids).long()
