@@ -12,7 +12,14 @@ from src.utils.chat_template import build_chat_template
 from .base import LlmModel
 from src.type import ChatMessage
 
+
 class OpenChat(LlmModel):
+    def load(self):
+        super().load()
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        return self
+
     def chat(self, messages: List[str], stream: bool = False, **kwargs):
         streamer = _stream_chat(self.model, self.tokenizer, messages) #, **kwargs)
         if stream:
