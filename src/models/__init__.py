@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from .audio import AudioModel
 from .embedding import EmbeddingModel
 from .image import ImageModel
-from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, CodeNinjaOpenChat, Phi
+from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, CodeNinjaOpenChat, Phi, DeepSeek
 
 from src.utils.chat_template import FreeTokenFormatConfig
 
@@ -32,11 +32,13 @@ _LLM_MODELS = [
     CodeNinjaOpenChat("beowolx/CodeNinja-1.0-OpenChat-7B", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
     Mistral("mistralai/Mistral-7B-Instruct-v0.2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
-
     MixtralOffload("lavawolfiee/Mixtral-8x7B-Instruct-v0.1-offloading-demo"),
+    Mistral("cognitivecomputations/dolphin-2.6-mistral-7b-dpo", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
     Phi("microsoft/phi-2", apply_quant=apply_quant, 
         model_args={"torch_dtype": torch.float16, "device_map": "auto"}, token_format_config = FreeTokenFormatConfig()),
+    
+    DeepSeek("deepseek-ai/deepseek-coder-6.7b-instruct", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
     Qwen("Qwen/Qwen-1_8B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud"),
     Qwen("Qwen/Qwen-7B-Chat", apply_quant=apply_quant, owner="Alibaba Cloud", model_args={"fp16": True}),

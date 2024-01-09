@@ -8,3 +8,4 @@ from .xverse import Xverse
 from .mistral import Mistral, MixtralOffload
 from .open_chat import OpenChat, CodeNinjaOpenChat
 from .phi import Phi
+from .deepseek import DeepSeek
