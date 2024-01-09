@@ -62,7 +62,6 @@ class CodeNinjaOpenChat(OpenChat):
 
         self.model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=quantization_config, **self.model_args)
         self.model.eval()
-        self.model.generation_config = GenerationConfig.from_pretrained(model_id, **self.generation_config)
         if self.token_format_config is not None:
             self.tokenizer.chat_template = build_chat_template(self.token_format_config)
         print(f"Model {model_id} loaded!")
