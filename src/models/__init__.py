@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from .audio import AudioModel
 from .embedding import EmbeddingModel
 from .image import ImageModel
-from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, Phi
+from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, CodeNinjaOpenChat, Phi
 
 from src.utils.chat_template import FreeTokenFormatConfig
 
@@ -29,7 +29,7 @@ _LLM_MODELS = [
     LLaMA("stabilityai/FreeWilly2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     
     OpenChat("openchat/openchat-3.5-1210", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
-    OpenChat("beowolx/CodeNinja-1.0-OpenChat-7B", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
+    CodeNinjaOpenChat("beowolx/CodeNinja-1.0-OpenChat-7B", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
     Mistral("mistralai/Mistral-7B-Instruct-v0.2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
