@@ -6,7 +6,7 @@ from .embedding import EmbeddingModel
 from .image import ImageModel
 from .llm import Baichuan, ChatGLM, InternLM, LLaMA, Qwen, Xverse, Mistral, MixtralOffload, OpenChat, CodeNinjaOpenChat, Phi, DeepSeek
 
-from src.utils.chat_template import FreeTokenFormatConfig
+from src.utils.chat_template import FreeTokenFormatConfig, AlpacaTokenFormatConfig
 
 apply_quant = True
 
@@ -27,6 +27,7 @@ _LLM_MODELS = [
     LLaMA("codellama/CodeLlama-7b-Instruct-hf", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "device_map": "auto"}),
     LLaMA("TinyLlama/TinyLlama-1.1B-Chat-v1.0", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     LLaMA("stabilityai/FreeWilly2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
+    LLaMA("TangQiaoYu/ToolAlpaca-7B", token_format_config=AlpacaTokenFormatConfig(),apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     
     OpenChat("openchat/openchat-3.5-1210", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
     CodeNinjaOpenChat("beowolx/CodeNinja-1.0-OpenChat-7B", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
