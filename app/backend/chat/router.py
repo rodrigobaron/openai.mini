@@ -20,7 +20,7 @@ load_dotenv()
 openai.api_base = os.getenv("OPENAI_API_BASE", None)
 openai.api_key = os.getenv("OPENAI_API_KEY", "none")
 
-FUNCTION_CALLING_LLMS = ["Qwen-7B-Chat", "Qwen-72B-Chat"]
+FUNCTION_CALLING_LLMS = ["Qwen-7B-Chat", "Qwen-72B-Chat", "ToolAlpaca-7B"]
 
 def chat_completions(request: ChatCompletionRequest):
     args = {
