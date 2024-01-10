@@ -40,9 +40,9 @@ class AlpacaTokenFormatConfig(TokenFormatConfig):
     B_SYS: str = ""
     E_SYS: str = "\n\n"
     B_INST: str = "user:\n"
-    E_INST: str = "\n\n"
+    E_INST: str = "</s>\n"
     B_AI: str = "assistant:"
-    E_AI: str = "\n\n"
+    E_AI: str = "</s>\n"
 
 
 class ChatMLTokenFormatConfig(TokenFormatConfig):
@@ -70,3 +70,17 @@ class OpenChatTokenFormatConfig(TokenFormatConfig):
 def build_chat_template(token_format_config):
     chat_template = "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% for message in messages %}{%if message['role'] == 'system' %}{{'" + token_format_config.B_SYS + "' + message['content'] + '" + token_format_config.E_SYS + "'}}{% endif %}{%if message['role'] == 'user' %}{{'" + token_format_config.B_INST + "' + message['content'] + '" + token_format_config.E_INST + "'}}{% endif %}{%if message['role'] == 'assistant' %}{{'" + token_format_config.B_AI + "' + message['content'] + '" + token_format_config.E_AI + "'}}{% endif %}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
     return chat_template
+
+
+def format_tokens(messages, tokenizer, config):
+    prompt = ""
+    for h in  messages:
+        if h.role == 'system':
+            prompt = f"{config.B_SYS}{h.content}{config.E_SYS}"
+        if h.role == 'user':
+            prompt += f"{config.B_INST}{h.content}{config.E_INST}"
+        if h.role == 'assistant':
+            prompt += f"{config.B_AI}{h.content}{config.E_AI}"
+    prompt += f"\n{config.B_AI}"
+    return tokenizer.encode(prompt)
+

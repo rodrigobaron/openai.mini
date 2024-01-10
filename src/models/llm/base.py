@@ -7,7 +7,6 @@ from ..base import Model
 from src.utils.env import compose_model_id
 from src.type import ChatMessage, ChatFunction
 from src.utils.chat_template import TokenFormatConfig
-from src.utils.chat_template import build_chat_template
 from src.utils.request import parse_chat_kwargs
 StreamType = Literal["tuple", "string"]
 
@@ -46,8 +45,6 @@ class LlmModel(Model):
         self.model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=quantization_config, **self.model_args)
         self.model.eval()
         self.model.generation_config = GenerationConfig.from_pretrained(model_id, **self.generation_config)
-        if self.token_format_config is not None:
-            self.tokenizer.chat_template = build_chat_template(self.token_format_config)
         print(f"Model {model_id} loaded!")
 
         return self

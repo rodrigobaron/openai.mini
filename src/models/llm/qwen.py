@@ -3,7 +3,6 @@ from typing import List, Optional
 import torch
 
 from src.utils.env import compose_model_id
-from src.utils.chat_template import build_chat_template
 from .base import LlmModel, split_messages
 
 class Qwen(LlmModel):
@@ -17,8 +16,6 @@ class Qwen(LlmModel):
             self.model.bfloat16().eval()
         else:
             self.model.eval()
-        if self.token_format_config is not None:
-            self.tokenizer.chat_template = build_chat_template(self.token_format_config)
         print(f"Model {model_id} loaded!")
 
         return self
