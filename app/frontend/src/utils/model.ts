@@ -55,6 +55,12 @@ const models: Record<string, ModelCard> = {
     homepage: "https://huggingface.co/meta-llama/Llama-2-7b-chat-hf",
     favicon: "/assets/avatars/llama.png",
   },
+  "ToolAlpaca-7B": {
+    id: "ToolAlpaca-7B",
+    name: "ToolAlpaca-7B",
+    homepage: "https://huggingface.co/meta-llama/Llama-2-7b-chat-hf",
+    favicon: "/assets/avatars/llama.png",
+  },
   "codellama-7b": {
     id: "CodeLlama-7b-Instruct-hf",
     name: "CodeLlama-7b-Instruct-hf",
