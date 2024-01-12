@@ -140,7 +140,7 @@ def build_function_call_messages(messages, functions, function_call="auto"):
         if message.role == 'user' or (message.role == 'assistant' and message.function_call == None):
             converted.append(message)
 
-    converted.append(ChatMessage(role="system", content=_build_react_message(message, tool_descs, tool_names, OBSERVATION)))
+    converted.append(ChatMessage(role="system", content=_build_react_message(tool_descs, tool_names, OBSERVATION)))
     return [x for x in reversed(converted)]
 
 

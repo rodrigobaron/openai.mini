@@ -13,6 +13,30 @@ from .base import LlmModel
 from src.type import ChatMessage
 from src.utils.chat_template import TokenFormatConfig, format_tokens
 
+# def _stream_wrapper(streamer, tokenizer, **kwargs):
+#     stop_words_ids = kwargs.get('stop_words_ids', None)
+#     if stop_words_ids is None:
+#         return streamer
+    
+#     stop_words = [tokenizer.decode(words_id).strip() for words_id in stop_words_ids]
+#     for word in streamer:
+#         if word.strip() in stop_words:
+#             return word
+#         yield word
+class MyTextIteratorStreamer(TextIteratorStreamer):
+    def __init__(
+        self, tokenizer: "AutoTokenizer", skip_prompt: bool = False, timeout: Optional[float] = None, stop_words_id = None, **decode_kwargs
+    ):
+        super().__init__(tokenizer, skip_prompt, timeout, **decode_kwargs)
+        stop_words_id = stop_words_id if stop_words_id is not None else []
+        self.stop_words = [tokenizer.decode(words_id).strip() for words_id in stop_words_id]
+
+    def __next__(self):
+        value = self.text_queue.get(timeout=self.timeout)
+        if value == self.stop_signal or value.strip() in self.stop_words:
+            raise StopIteration()
+        else:
+            return value
 
 class OpenChat(LlmModel):
     def load(self):
@@ -24,10 +48,10 @@ class OpenChat(LlmModel):
     def chat(self, messages: List[str], stream: bool = False, **kwargs):
         streamer = _stream_chat(self.model, self.tokenizer, messages, self.token_format_config, **kwargs)
         if stream:
-            return _stream_wrapper(streamer, self.tokenizer, **kwargs), "delta"
+            return streamer, "delta"
         else:
             chunks = []
-            for chunk in _stream_wrapper(streamer, self.tokenizer, **kwargs):
+            for chunk in streamer:
                 chunks.append(chunk)
 
             return "".join(chunks).strip(), None
@@ -60,21 +84,12 @@ def _compose_args(tokenizer, messages: List[ChatMessage], config: TokenFormatCon
     input_ids = input_ids.to("cuda")
     gen_kwargs["input_ids"] = input_ids
 
-    streamer = TextIteratorStreamer(tokenizer, timeout=60.0, skip_prompt=True, skip_special_tokens=True)
+    streamer = MyTextIteratorStreamer(tokenizer, timeout=60.0, skip_prompt=True, stop_words_id=gen_kwargs.get('stop_words_id', None), skip_special_tokens=True)
     gen_kwargs["streamer"] = streamer
 
     return gen_kwargs
 
-def _stream_wrapper(streamer, tokenizer, **kwargs):
-    stop_words_ids = kwargs.get('stop_words_ids', None)
-    if stop_words_ids is None:
-        return streamer
-    
-    stop_words = [tokenizer.decode(words_id).strip() for words_id in stop_words_ids]
-    for word in streamer:
-        if word.strip() in stop_words:
-            return word
-        yield word
+
 
 class CodeNinjaOpenChat(OpenChat):
     def load(self):
