@@ -24,10 +24,10 @@ class OpenChat(LlmModel):
     def chat(self, messages: List[str], stream: bool = False, **kwargs):
         streamer = _stream_chat(self.model, self.tokenizer, messages, self.token_format_config, **kwargs)
         if stream:
-            return streamer, "delta"
+            return _stream_wrapper(streamer, self.tokenizer, **kwargs), "delta"
         else:
             chunks = []
-            for chunk in streamer:
+            for chunk in _stream_wrapper(streamer, self.tokenizer, **kwargs):
                 chunks.append(chunk)
 
             return "".join(chunks).strip(), None
@@ -64,6 +64,17 @@ def _compose_args(tokenizer, messages: List[ChatMessage], config: TokenFormatCon
     gen_kwargs["streamer"] = streamer
 
     return gen_kwargs
+
+def _stream_wrapper(streamer, tokenizer, **kwargs):
+    stop_words_ids = kwargs.get('stop_words_ids', None)
+    if stop_words_ids is None:
+        return streamer
+    
+    stop_words = [tokenizer.decode(words_id).strip() for words_id in stop_words_ids]
+    for word in streamer:
+        if word.strip() in stop_words:
+            return word
+        yield word
 
 class CodeNinjaOpenChat(OpenChat):
     def load(self):

@@ -29,7 +29,7 @@ _LLM_MODELS = [
     LLaMA("stabilityai/FreeWilly2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     LLaMA("TangQiaoYu/ToolAlpaca-7B", token_format_config=AlpacaTokenFormatConfig(),apply_quant=apply_quant, model_args={"torch_dtype": torch.float16, "low_cpu_mem_usage": True, "device_map": "auto"}),
     
-    OpenChat("openchat/openchat-3.5-1210", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
+    OpenChat("openchat/openchat-3.5-0106", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
     CodeNinjaOpenChat("beowolx/CodeNinja-1.0-OpenChat-7B", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),
 
     Mistral("mistralai/Mistral-7B-Instruct-v0.2", apply_quant=apply_quant, model_args={"torch_dtype": torch.float16}),

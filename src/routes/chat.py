@@ -13,7 +13,7 @@ from ..utils.token import num_tokens_from_messages
 
 chat_router = APIRouter(prefix="/chat")
 
-FUNCTION_CALLING_LLMS = ["Qwen-7B-Chat", "Qwen-72B-Chat", "ToolAlpaca-7B"]
+FUNCTION_CALLING_LLMS = ["Qwen-7B-Chat", "Qwen-72B-Chat", "ToolAlpaca-7B", "OpenChat"]
 
 
 @chat_router.post("/completions", response_model=ChatCompletionResponse)
@@ -22,7 +22,7 @@ async def chat_completions(request: ChatCompletionRequest):
     raise_if_invalid_model(model, LlmModel)
 
     with_function_call = need_function_call(messages=request.messages, functions=request.functions)
-    if with_function_call and model.id not in FUNCTION_CALLING_LLMS:
+    if with_function_call and model.name not in FUNCTION_CALLING_LLMS:
         with_function_call = False
         # raise HTTPException(status_code=400, detail="Invalid request format: functions only supported by Qwen-7B-Chat")
 
