@@ -74,8 +74,8 @@ const models: Record<string, ModelCard> = {
     favicon: "/assets/avatars/llama.png",
   },
   "openchat-3.5": {
-    id: "openchat-3.5-1210",
-    name: "openchat-3.5-1210",
+    id: "openchat-3.5-0106",
+    name: "openchat-3.5-0106",
     homepage: "https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf",
     favicon: "/assets/avatars/llama.png",
   },

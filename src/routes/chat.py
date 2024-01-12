@@ -13,7 +13,7 @@ from ..utils.token import num_tokens_from_messages
 
 chat_router = APIRouter(prefix="/chat")
 
-FUNCTION_CALLING_LLMS = ["Qwen-7B-Chat", "Qwen-72B-Chat", "ToolAlpaca-7B", "OpenChat"]
+FUNCTION_CALLING_LLMS = ["Qwen-7B-Chat", "Qwen-72B-Chat", "ToolAlpaca-7B", "openchat-3.5-0106"]
 
 
 @chat_router.post("/completions", response_model=ChatCompletionResponse)
