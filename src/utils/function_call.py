@@ -41,7 +41,9 @@ TOOL_PARAM_DESC = """{param_name}: {param_type}
 # description: str
 
 def _build_tool_param(params):
-    params_fmt = [TOOL_PARAM_DESC.format(param_name=p.name, param_type=p.type, param_description=p.description) for p in params]
+    props = [{'name': k, 'type': v['type'], 'description': v['description']} for k, v in params["properties"].items()]
+
+    params_fmt = [TOOL_PARAM_DESC.format(param_name=p['name'], param_type=p['type'], param_description=p['description']) for p in props]
     return "".join(params_fmt)
 
 
